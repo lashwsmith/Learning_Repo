@@ -39,17 +39,18 @@ echo "Is the above information correct?"
 read user_input
 }
 
-function nova_boot ()
+function nova_confirm ()
 {
 if [ $user_input != "y" ]; then
         echo "Please re-enter your information"
         read_func
-else
-        echo "Booting instance"
+fi
+if [ $user_input == "y" ]; then
+	echo "******Booting New Instance******"
         nova boot --flavor $flavor_id --image $image_id --key-name $key_pair --availability-zone $avail_zone --nic net-id=$net_id $instance_name
 fi
 }
 
 read_func
 
-nova_boot
+nova_confirm
