@@ -4,6 +4,9 @@ function read_func ()
 {
 echo "Booting New Server"
 
+echo "Number of servers:"
+read number
+
 echo "Please enter a Flavor ID from the list: "
 nova flavor-list
 read flavor_id
@@ -46,8 +49,13 @@ if [ $user_input != "y" ]; then
         read_func
 fi
 if [ $user_input == "y" ]; then
-	echo "******Booting New Instance******"
-        nova boot --flavor $flavor_id --image $image_id --key-name $key_pair --availability-zone $avail_zone --nic net-id=$net_id $instance_name
+	i=1
+	while [[ $i -le $number ]]
+	do
+		echo "******Booting New Instance******"
+		nova boot --flavor $flavor_id --image $image_id --key-name $key_pair --availability-zone $avail_zone --nic net-id=$net_id $instance_name-$i
+	((i = i + 1))
+	done
 fi
 }
 
