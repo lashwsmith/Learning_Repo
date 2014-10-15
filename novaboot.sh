@@ -44,10 +44,12 @@ read user_input
 
 function nova_confirm ()
 {
-if [ $user_input != "y" ]; then
-        echo "Please re-enter your information"
-        read_func
-fi
+while [ $user_input == "n" ]
+do
+	echo "Please re-enter your information"
+	read_func
+	done
+
 if [ $user_input == "y" ]; then
 	i=1
 	while [[ $i -le $number ]]
