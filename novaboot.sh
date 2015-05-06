@@ -1,6 +1,26 @@
 #!/bin/bash
 
-function read_func ()
+region_func ()
+{
+echo "Please select a region (east/west): "
+read region
+
+if [ $region == "west" ]; then
+ 	sed 's/OS_REGION_NAME=region-b.geo-1/OS_REGION_NAME=region-a.geo-1/g' /etc/.bashrc
+	
+
+elif [ $region == "east" ]; then
+	sed 's/OS_REGION_NAME=region-a.geo-1/OS_REGION_NAME=region-b.geo-1/g' /etc/.bashrc
+
+else
+
+	echo "Please re-enter your region: "
+	region_func
+
+fi
+}
+
+read_func ()
 {
 echo "Booting New Server"
 
@@ -42,7 +62,7 @@ echo "Is the above information correct?"
 read user_input
 }
 
-function nova_confirm ()
+nova_confirm ()
 {
 while [ $user_input == "n" ]
 do
@@ -60,6 +80,8 @@ if [ $user_input == "y" ]; then
 	done
 fi
 }
+
+region_func
 
 read_func
 
