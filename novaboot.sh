@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+#Function to change the region based on user input
 region_func ()
 {
 echo "Please select a region (east/west): "
@@ -20,6 +22,8 @@ else
 fi
 }
 
+
+#Function to store user input in variables for use in the nova command
 read_func ()
 {
 echo "Booting New Server"
@@ -62,6 +66,8 @@ echo "Is the above information correct?"
 read user_input
 }
 
+
+#Function to create the server based on user input.
 nova_confirm ()
 {
 while [ $user_input == "n" ]
@@ -81,8 +87,32 @@ if [ $user_input == "y" ]; then
 fi
 }
 
-region_func
 
-read_func
+#Initial check to verify that the CLI Tools are installed. If they are installed, script will continue boot process; if not, script will ask/install tools.
+if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ];then
 
-nova_confirm
+                echo "CLI Tools are not installed. Would you like to install them now? (y/n)"
+                read cli_input
+
+                if [ cli_input == 'y' ]; then
+
+                        echo "**Installing the novaclient now**"
+                        sudo apt-get -y install python-novaclient python-neutronclient python-cinderclient python-glanceclent python-swiftclient python-troveclient python-keystoneclient;
+						
+				region_func
+				read_func
+				nova_confirm
+
+                else
+                        echo "Please install the CLI Tools before continuing"
+                        exit
+
+                fi
+				
+	region_func
+	read_func
+	nova_confirm
+			
+		
+fi
+
