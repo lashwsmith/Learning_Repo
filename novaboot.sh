@@ -94,10 +94,10 @@ if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok 
                 echo "CLI Tools are not installed. Would you like to install them now? (y/n)"
                 read cli_input
 
-                if [ cli_input == 'y' ]; then
+                if [ $cli_input == "y" ]; then
 
                         echo "**Installing the novaclient now**"
-                        sudo apt-get -y install python-novaclient python-neutronclient python-cinderclient python-glanceclent python-swiftclient python-troveclient python-keystoneclient;
+                        sudo apt-get -y install python-novaclient python-neutronclient python-cinderclient python-glanceclient python-swiftclient python-troveclient python-keystoneclient;
 						
 				region_func
 				read_func
@@ -109,10 +109,11 @@ if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok 
 
                 fi
 				
-	region_func
-	read_func
-	nova_confirm
-			
-		
+	
 fi
+
+
+region_func
+read_func
+nova_confirm
 
