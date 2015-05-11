@@ -35,7 +35,7 @@ echo "Please enter a Flavor ID from the list: "
 nova flavor-list
 read flavor_id
 
-#script to select the glance image to use
+#call to function to select the glance image to use
 os_select
 
 echo "Please enter a Keypair name: "
@@ -53,6 +53,9 @@ read net_id
 echo "Please enter a name for the instance: "
 read instance_name
 
+echo "Would you like to make this instance a LAMP server? (y/n): "
+read lamp_check
+
 echo "Booting instance with the following information: "
 echo "Flavor: $flavor_id"
 echo "Image ID: $image_id"
@@ -60,8 +63,9 @@ echo "Key Pair Name: $key_pair"
 echo "Availability Zone: $avail_zone"
 echo "Network ID: $net_id"
 echo "Instance Name: $instance_name"
+echo "LAMP stack: $lamp_check"
 
-echo "Is the above information correct?"
+echo "Is the above information correct? (y/n): "
 read user_input
 }
 
@@ -87,6 +91,29 @@ fi
 }
 
 
+#Function to create the server with LAMP stack installed through user-data
+nova_lamp ()
+{
+while [ $user_input == "n" ]
+do
+        echo "Please re-enter your information"
+        read_func
+        done
+
+if [ $user_input == "y" ]; then
+        i=1
+        while [[ $i -le $number ]]
+        do
+                echo "******Booting New Instance******"
+                nova boot --flavor $flavor_id --user-data lampdata.txt --image $image_id --key-name $key_pair --availability-zone $avail_zone --nic net-id=$net_id $instance_name-$i
+        ((i = i + 1))
+        done
+fi
+}
+
+
+
+#Function to choose which OS to use.
 os_select ()
 {
 echo -e "Please enter an Image type\na.) ubuntu\nb.) centos\nc.) debian\nd.) suse\ne.) windows"
@@ -130,11 +157,7 @@ if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok 
                 if [ $cli_input == "y" ]; then
 
                         echo "**INSTALLING CLI TOOLS NOW**"
-                        sudo apt-get -y install python-novaclient python-neutronclient python-glanceclient python-cinderclient python-keystoneclient python-swiftclient python-troveclient;
-
-                                region_func
-                                read_func
-                                nova_confirm
+                        sudo apt-get -y install python-novaclient python-neutronclient python-glanceclient python-cinderclient python-keystoneclient python-swiftclient python-troveclient
 
                 else
                         echo "Please install the CLI Tools before continuing"
@@ -148,5 +171,17 @@ fi
 
 region_func
 read_func
-nova_confirm
 
+
+if [ $lamp_check == "n" ]; then
+
+	nova_confirm
+
+elif [ $lamp_check == "y" ]; then
+
+	nova_lamp
+
+else
+echo "Please re-enter your information"
+
+fi
