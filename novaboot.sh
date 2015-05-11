@@ -28,16 +28,15 @@ read_func ()
 {
 echo "Booting New Server"
 
-echo "Number of servers:"
+echo "Please enter the number of servers you would like to create: "
 read number
 
 echo "Please enter a Flavor ID from the list: "
 nova flavor-list
 read flavor_id
 
-echo "Please enter an Image ID: "
-glance image-list
-read image_id
+#script to select the glance image to use
+os_select
 
 echo "Please enter a Keypair name: "
 nova keypair-list
@@ -86,6 +85,40 @@ if [ $user_input == "y" ]; then
 	done
 fi
 }
+
+
+os_select ()
+{
+echo -e "Please enter an Image type\na.) ubuntu\nb.) centos\nc.) debian\nd.) suse\ne.) windows"
+read os_choice
+
+        if [ $os_choice = 'a' ]; then
+                glance image-list | grep 'Ubuntu'
+                read image_id
+
+        elif [ $os_choice = 'b' ]; then
+                glance image-list | grep 'CentOS'
+                read image_id
+
+        elif [ $os_choice = 'c' ]; then
+                glance image-list | grep 'Debian'
+                read image_id
+
+        elif [ $os_choice = 'd' ]; then
+                glance image-list | grep 'SUSE'
+                read image_id
+
+        elif [ $os_choice = 'e' ]; then
+                glance image-list | grep 'Windows'
+                read image_id
+
+        else
+                echo "Please select an Image type"
+                os_select
+
+        fi
+}
+
 
 
 #Initial check to verify that the CLI Tools are installed. If they are installed, script will continue boot process; if not, script will ask/install tools.
