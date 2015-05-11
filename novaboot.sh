@@ -8,11 +8,14 @@ echo "Please select a region (east/west): "
 read region
 
 if [ $region == "west" ]; then
- 	sed 's/OS_REGION_NAME=region-b.geo-1/OS_REGION_NAME=region-a.geo-1/g' /etc/.bashrc
-	
+ 	sed -i 's/OS_REGION_NAME=region-b.geo-1/OS_REGION_NAME=region-a.geo-1/g' ~/.bashrc
+	sed -i 's/OS_AUTH_URL=https:\/\/region-b.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//OS_AUTH_URL=https:\/\/region-a.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//g' ~/.bashrc
+	source ~/.bashrc
 
 elif [ $region == "east" ]; then
-	sed 's/OS_REGION_NAME=region-a.geo-1/OS_REGION_NAME=region-b.geo-1/g' /etc/.bashrc
+	sed -i 's/OS_REGION_NAME=region-a.geo-1/OS_REGION_NAME=region-b.geo-1/g' ~/.bashrc
+	sed -i 's/OS_AUTH_URL=https:\/\/region-a.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//OS_AUTH_URL=https:\/\/region-b.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//g' ~/.bashrc
+	source ~/.bashrc
 
 else
 
