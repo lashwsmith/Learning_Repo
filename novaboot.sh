@@ -7,15 +7,15 @@ region_func ()
 echo "Please select a region (east/west): "
 read region
 
-if [ $region == "west" ]; then
- 	sed -i 's/OS_REGION_NAME=region-b.geo-1/OS_REGION_NAME=region-a.geo-1/g' ~/.bashrc
-	sed -i 's/OS_AUTH_URL=https:\/\/region-b.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//OS_AUTH_URL=https:\/\/region-a.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//g' ~/.bashrc
-	source ~/.bashrc
+if [ $region == "west" ]; then	
+	OS_REGION_NAME=region-a.geo-1
+	OS_AUTH_URL=https://region-a.geo-1.identity.hpcloudsvc.com:35357/v2.0/
+		
 
 elif [ $region == "east" ]; then
-	sed -i 's/OS_REGION_NAME=region-a.geo-1/OS_REGION_NAME=region-b.geo-1/g' ~/.bashrc
-	sed -i 's/OS_AUTH_URL=https:\/\/region-a.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//OS_AUTH_URL=https:\/\/region-b.geo-1.identity.hpcloudsvc.com:35357\/v2.0\//g' ~/.bashrc
-	source ~/.bashrc
+	OS_REGION_NAME=region-b.geo-1
+	OS_AUTH_URL=https://region-b.geo-1.identity.hpcloudsvc.com:35357/v2.0/
+	
 
 else
 
@@ -170,6 +170,25 @@ if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok 
 
 fi
 
+#unset variables just in case!
+
+unset $PROJECT_NAME
+unset $HOR_USERNAME
+unset $HOR_PASSWORD
+
+
+#get horizon creds
+echo "Please enter your Project NAME"
+	read PROJECT_NAME
+	OS_TENANT_NAME=$PROJECT_NAME
+
+echo "Please enter your Horizon Username"
+	read HOR_USERNAME
+	OS_USERNAME=$HOR_USERNAME
+
+echo "Please enter your Horizon Password"
+	read -s HOR_PASSWORD
+	OS_PASSWORD=$HOR_PASSWORD
 
 
 region_func
@@ -188,3 +207,5 @@ else
 echo "Please re-enter your information"
 
 fi
+
+rm lampdata.txt
