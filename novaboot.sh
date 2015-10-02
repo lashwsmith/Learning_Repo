@@ -1,5 +1,3 @@
-#!/bin/bash
-
 
 #Function to change the region based on user input
 region_func ()
@@ -230,13 +228,30 @@ if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok 
                 if [ $cli_input == "y" ]; then
 
                         echo "**INSTALLING CLI TOOLS NOW**"
-                        sudo apt-get -y install python-novaclient python-neutronclient python-glanceclient python-cinderclient python-keystoneclient python-swiftclient python-troveclient
+                        $INSTALLER_TYPE python-novaclient python-neutronclient python-glanceclient python-cinderclient python-keystoneclient python-swiftclient python-troveclient
 
                 else
                         echo "Please install the CLI Tools before continuing"
                         exit
 
                 fi
+
+fi
+
+
+
+
+#THIS IS WHERE SHIT GETS REAL
+#VVVVVVVVVVVVVVVVVVVVVVVVVVVV
+
+#check for yum/apt-get so that this works on more than ubuntu
+if [ $(which apt-get 2>/dev/null | grep -c "apt-get") -eq 0 ]; then
+	set INSTALLER_TYPE = 'sudo apt-get -y install'
+
+elif [ $(which yum 2>/dev/null == true | grep -c "yum") -eq 0 ]; then
+	set INSTALLER_TYPE = 'sudo yum -y install'
+	
+else echo "Clippy: I see you are a nerd. Bring me a suitable distro"
 
 fi
 
@@ -265,7 +280,7 @@ echo "Please enter your Horizon Password"
 echo "Will this be an ephemeral or persistent instance?"
 read instance_type
 
-        if [ $instance_type == "ephemeral" ]; then
+    if [ $instance_type == "ephemeral" ]; then
 		eph_func
 
 	elif [ $instance_type == "persistent" ]; then
