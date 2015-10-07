@@ -219,40 +219,210 @@ read os_choice
 
 
 
-#Initial check to verify that the CLI Tools are installed. If they are installed, script will continue boot process; if not, script will ask/install tools.
-if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-neutronclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-glanceclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-cinderclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-keystoneclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-swiftclient 2>/dev/null | grep -c "ok installed") -eq 0 ] || [ $(dpkg-query -W -f='${Status}' python-troveclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
-
-                echo "One or more of the CLI Tools are not installed. Would you like to install them now? (y/n)"
-                read cli_input
-
-                if [ $cli_input == "y" ]; then
-
-                        echo "**INSTALLING CLI TOOLS NOW**"
-                        $INSTALLER_TYPE python-novaclient python-neutronclient python-glanceclient python-cinderclient python-keystoneclient python-swiftclient python-troveclient
-
-                else
-                        echo "Please install the CLI Tools before continuing"
-                        exit
-
-                fi
-
-fi
-
-
-
-
-#THIS IS WHERE SHIT GETS REAL
+#JIT GOES HAM IN THE DOLLAR STORE BELOW THIS
 #VVVVVVVVVVVVVVVVVVVVVVVVVVVV
+if [ $(which apt-get 2>/dev/null | grep -c "apt-get") -eq 1 ]; then
+    set INSTALLER_TYPE = 'sudo apt-get -y install'
 
-#check for yum/apt-get so that this works on more than ubuntu
-if [ $(which apt-get 2>/dev/null | grep -c "apt-get") -eq 0 ]; then
-	set INSTALLER_TYPE = 'sudo apt-get -y install'
+		if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Nova CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+		
+						echo "***INSTALLING NOVA CLIENT***"
+						$INSTALLER_TYPE python-novaclient		
 
-elif [ $(which yum 2>/dev/null == true | grep -c "yum") -eq 0 ]; then
-	set INSTALLER_TYPE = 'sudo yum -y install'
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+
+		elif [ $(dpkg-query -W -f='${Status}' python-neutronclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Neutron CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+		
+						echo "***INSTALLING NEUTRON CLIENT***"
+						$INSTALLER_TYPE python-neutronclient
+			
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(dpkg-query -W -f='${Status}' python-glanceclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Glance CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+
+						echo "***INSTALLING GLANCE CLIENT***"
+						$INSTALLER_TYPE python-glanceclient
+
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+
+		elif [ $(dpkg-query -W -f='${Status}' python-cinderclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Cinder CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+		
+						echo "***INSTALLING CINDER CLIENT***"
+						$INSTALLER_TYPE python-cinderclient
+		
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(dpkg-query -W -f='${Status}' python-keystoneclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Keystone CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+
+						echo "***INSTALLING KEYSTONE CLIENT***"
+						$INSTALLER_TYPE python-keystoneclient
+
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(dpkg-query -W -f='${Status}' python-swiftclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Swift CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+
+						echo "***INSTALLING SWIFT CLIENT***"
+						$INSTALLER_TYPE python-swiftclient
+
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(dpkg-query -W -f='${Status}' python-troveclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Trove CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+
+						echo "***INSTALLING TROVE CLIENT***"
+						$INSTALLER_TYPE python-troveclient
+
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		else echo "All CLI tools are installed."
+		
+		fi
+		
+elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
+
+	set INSTALLER_TYPE = 'sudo pip install '
+    	
+		if [ $(rpm -qa --queryformat='${Status}' gcc 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
+                        
+			echo "Installing Pre-reqs"
+
+			sudo yum install libxml2 libxml2-devel libxslt libxslt-devel python-devel libffi-devel openssl-devel gcc
+
+			curl -O https://bootstrap.pypa.io/get-pip.py
+
+			sudo python get-pip.py
+
+			sudo pip install --upgrade setuptools
+                                
+		fi
+
+
+		if [ $(rpm -qa --queryformat='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Nova CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+				
 	
-else echo "Clippy: I see you are a nerd. Bring me a suitable distro"
+						echo "***INSTALLING CENTOS NOVA CLIENT***"
+					echo	$INSTALLER_TYPE python-novaclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
 
+		elif [ $(rpm -qa --queryformat='${Status}' python-neutronclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Neutron CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+
+				if [ $cli_input == "y" ]; then
+						echo "***INSTALLING NEUTRON CLIENT***"
+						$INSTALLER_TYPE python-neutronclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(rpm -qa --queryformat='${Status}' python-glanceclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Glance CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input		
+				if [ $cli_input == "y" ]; then
+					
+						echo "***INSTALLING GLANCE CLIENT***"
+						$INSTALLER_TYPE python-glanceclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(rpm -qa --queryformat='${Status}' python-cinderclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Cinder CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+				
+						echo "***INSTALLING CINDER CLIENT***"
+						$INSTALLER_TYPE python-cinderclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(rpm -qa --queryformat='${Status}' python-keystoneclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Keystone CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input
+				if [ $cli_input == "y" ]; then
+				
+						echo "***INSTALLING KEYSTONE CLIENT***"
+						$INSTALLER_TYPE python-keystoneclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(rpm -qa --queryformat='${Status}' python-swiftclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Swift CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input				
+				if [ $cli_input == "y" ]; then
+					
+						echo "***INSTALLING SWIFT CLIENT***"
+						$INSTALLER_TYPE python-swiftclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		elif [ $(rpm -qa --queryformat='${Status}' python-troveclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+			echo "Trove CLI client is not installed. Would you like to install it now? (y/n)"
+				read cli_input				
+				if [ $cli_input == "y" ]; then
+					
+						echo "***INSTALLING TROVE CLIENT***"
+						$INSTALLER_TYPE python-troveclient
+						
+				else echo "Please install the necessary CLI tools. Terminating."
+				exit
+				fi
+			
+		else echo "All CLI tools are installed."
+
+		fi
+		
+	else echo "Clippy: I see you are a nerd. Bring me a suitable distro"
+	exit
+	
 fi
 
 #unset variables just in case!
