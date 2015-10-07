@@ -222,7 +222,7 @@ read os_choice
 #JIT GOES HAM IN THE DOLLAR STORE BELOW THIS
 #VVVVVVVVVVVVVVVVVVVVVVVVVVVV
 if [ $(which apt-get 2>/dev/null | grep -c "apt-get") -eq 1 ]; then
-    set INSTALLER_TYPE = 'sudo apt-get -y install'
+    INSTALLER_TYPE='sudo apt-get -y install'
 
 		if [ $(dpkg-query -W -f='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
 			echo "Nova CLI client is not installed. Would you like to install it now? (y/n)"
@@ -314,8 +314,8 @@ if [ $(which apt-get 2>/dev/null | grep -c "apt-get") -eq 1 ]; then
 		
 elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 
-	set INSTALLER_TYPE = 'sudo pip install '
-    	
+	INSTALLER_TYPE="sudo pip install "
+	
 		if [ $(rpm -qa --queryformat='${Status}' gcc 2>/dev/null | grep -c "ok installed") -eq 1 ]; then
                         
 			echo "Installing Pre-reqs"
@@ -338,7 +338,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				
 	
 						echo "***INSTALLING CENTOS NOVA CLIENT***"
-					echo	$INSTALLER_TYPE python-novaclient
+						$INSTALLER_TYPE python-novaclient
 						
 				else echo "Please install the necessary CLI tools. Terminating."
 				exit
