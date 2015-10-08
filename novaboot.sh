@@ -331,7 +331,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 		fi
 
 
-		if [ $(rpm -qa --queryformat='${Status}' python-novaclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		if [ $(which nova; echo $? 2>log.txt) -ge 1 ]; then
 			echo "Nova CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input
 				if [ $cli_input == "y" ]; then
@@ -344,7 +344,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 
-		elif [ $(rpm -qa --queryformat='${Status}' python-neutronclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [ $(which neutron; echo $? 2>log.txt) -ge 1 ]; then
 			echo "Neutron CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input
 
@@ -356,7 +356,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 			
-		elif [ $(rpm -qa --queryformat='${Status}' python-glanceclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [  $(which glance; echo $? 2>log.txt ) -ge 1 ]; then
 			echo "Glance CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input		
 				if [ $cli_input == "y" ]; then
@@ -368,7 +368,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 			
-		elif [ $(rpm -qa --queryformat='${Status}' python-cinderclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [ $(which cinder; echo $? 2>log.txt ) -ge 1 ]; then
 			echo "Cinder CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input
 				if [ $cli_input == "y" ]; then
@@ -380,7 +380,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 			
-		elif [ $(rpm -qa --queryformat='${Status}' python-keystoneclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [ $(which keystone; echo $? 2>log.txt ) -ge 1 ]; then
 			echo "Keystone CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input
 				if [ $cli_input == "y" ]; then
@@ -392,7 +392,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 			
-		elif [ $(rpm -qa --queryformat='${Status}' python-swiftclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [ $(which swift; echo $? 2>log.txt ) -ge 1 ]; then
 			echo "Swift CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input				
 				if [ $cli_input == "y" ]; then
@@ -404,7 +404,7 @@ elif [ $(which yum 2>/dev/null | grep -c "yum") -eq 1 ]; then
 				exit
 				fi
 			
-		elif [ $(rpm -qa --queryformat='${Status}' python-troveclient 2>/dev/null | grep -c "ok installed") -eq 0 ]; then
+		elif [ $(which trove; echo $? 2>log.txt ) -ge 1 ]; then
 			echo "Trove CLI client is not installed. Would you like to install it now? (y/n)"
 				read cli_input				
 				if [ $cli_input == "y" ]; then
